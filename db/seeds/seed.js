@@ -58,7 +58,8 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       const formattedArticles = articleData.map(({ title, topic, author, body, created_at, votes, article_img_url }) => {
-        return [title, topic, author, body, new Date(created_at), votes, article_img_url];
+        //
+        return [title, topic, author, body, new Date(created_at), votes || 0, article_img_url];
       });
       const queryStr = format(
         `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;`,
@@ -66,12 +67,17 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );
       return db.query(queryStr);
     })
-    .then(() => {
-      const formattedComments = commentData.map(({ body, votes, author, created_at }) => {
-        return [body, votes, author, new Date(created_at)];
+    .then(({ rows }) => {
+      console.log(rows, "<-- these are the rows")
+      const articleIdLookup = {}
+      rows.forEach(articleRow => {
+        articleIdLookup[articleRow.title] = articleRow.article_id
+      })
+      const formattedComments = commentData.map(({ article_title, body, votes, author, created_at }) => {
+        return [articleIdLookup[article_title], body, votes, author, new Date(created_at)];
       })
       const queryStr = format(
-        `INSERT INTO comments (body, votes, author, created_at) VALUES %L RETURNING *;`,
+        `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *;`,
         formattedComments
       );
       return db.query(queryStr)
