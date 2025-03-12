@@ -7,10 +7,12 @@ const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
 
 /* Set up your beforeEach & afterAll functions here */
+//Reseed the database before each test
 beforeEach(() => {
   return seed(data)
 })
 
+//Close the DB connection after all test
 afterAll(() => {
   return db.end()
 })
