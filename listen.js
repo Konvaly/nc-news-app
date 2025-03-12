@@ -7,3 +7,5 @@ app.listen(8080, (err) => {
         console.log("app listening on 8080")
     }
 })
+
+module.exports = app;
