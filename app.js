@@ -3,9 +3,9 @@ const app = express();
 
 const endpoints = require("./endpoints.json");
 
-const getEndpoints = require("./controllers/api.controllers");
-const getTopics = require("./controllers/topics.controllers");
-const getArticleById = require("./controllers/articles.controllers");
+const { getEndpoints } = require("./controllers/api.controllers");
+const { getTopics } = require("./controllers/topics.controllers");
+const { getArticleById } = require("./controllers/articles.controllers");
 
 const {
     handleNonExistentEndpoint,

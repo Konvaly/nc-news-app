@@ -1,11 +1,9 @@
 const topics = require("../db/data/test-data/topics");
-const fetchTopics = require("../models/topics.models");
+const { fetchTopics } = require("../models/topics.models");
 
-const getTopics = (request, response, next) => {
+exports.getTopics = (req, res, next) => {
     fetchTopics()
         .then((topics) => {
-            response.status(200).send({ topics });
+            res.status(200).send({ topics });
         })
 };
-
-module.exports = getTopics;

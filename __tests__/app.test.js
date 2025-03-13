@@ -71,6 +71,7 @@ describe("GET /api/articles/:article_id", () => {
       .get('/api/articles/1')
       .expect(200)
       .then(({ body: { article } }) => {
+        console.log(article, ">> article from test")
         expect(article).toEqual({
           author: expect.any(String),
           title: expect.any(String),

@@ -1,7 +1,7 @@
 const articles = require("../db/data/test-data/articles");
-const fetchArticleById = require("../models/articles.models");
+const { fetchArticleById } = require("../models/articles.models");
 
-const getArticleById = (req, res, next) => {
+exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
 
     fetchArticleById(article_id)
@@ -10,5 +10,3 @@ const getArticleById = (req, res, next) => {
         })
         .catch(next);
 }
-
-module.exports = getArticleById;
