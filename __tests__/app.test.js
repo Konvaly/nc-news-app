@@ -5,6 +5,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const fetchTopics = require("../models/topics.models");
 
 /* Set up your beforeEach & afterAll functions here */
 //Reseed the database before each test
@@ -42,6 +43,7 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body: { topics } }) => {
+        expect(topics).toBeInstanceOf(Array)
         expect(topics).toHaveLength(3)
         topics.forEach((topic) => {
           expect(topic).toEqual({
@@ -50,6 +52,14 @@ describe("GET /api/topics", () => {
             img_url: expect.any(String)
           })
         })
+      })
+  })
+  test("404: responds with an error if path doesn't exist", () => {
+    return request(app)
+      .get('/api/nonexistent')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid path")
       })
   })
 })
