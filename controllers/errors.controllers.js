@@ -1,24 +1,34 @@
-const handleNonExistentEndpoint = (request, response, next) => {
+const handleNonExistentEndpoint = (req, res, next) => {
     console.log("that endpoint doesn't exist")
-    response.status(404).send({ msg: "Invalid path" })
+    res.status(404).send({ msg: "Invalid path" })
 }
 
 
-const handleCustomErrors = (err, request, response, next) => {
+const handleCustomErrors = (err, req, res, next) => {
     if (err.status && err.msg) {
-        response.status(err.status).send({ msg: err.msg });
+        res.status(err.status).send({ msg: err.msg });
     } else {
         next(err);
     }
 };
 
-const handleServerErrors = (err, request, response, next) => {
+const handleServerErrors = (err, req, res, next) => {
     console.error(err);
-    response.status(500).send({ msg: "Internal Server Error" });
+    res.status(500).send({ msg: "Internal Server Error" });
 };
+
+const handlePsqlErrors = (err, req, res, next) => {
+    console.log(err);
+    if (err.code === "22P02") {
+        res.status(400).send({ msg: "Bad request" });
+    } else {
+        next(err);
+    }
+}
 
 module.exports = {
     handleNonExistentEndpoint,
     handleCustomErrors,
-    handleServerErrors
+    handleServerErrors,
+    handlePsqlErrors
 };

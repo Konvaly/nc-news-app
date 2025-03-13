@@ -5,7 +5,6 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
-const fetchTopics = require("../models/topics.models");
 
 /* Set up your beforeEach & afterAll functions here */
 //Reseed the database before each test
@@ -63,3 +62,43 @@ describe("GET /api/topics", () => {
       })
   })
 })
+
+/*TASK-3*/
+//   /api/articles/article_id
+describe("GET /api/articles/:article_id", () => {
+  test("200: responds with a correctly formatted object of article", () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: 1,
+          body: expect.any(String),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("404: responds with an error if article_id does not exist", () => {
+    4
+    return request(app)
+      .get('/api/articles/9999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      })
+  })
+  test("400: responds with 'Bad request' when given an invalid article_id", () => {
+    return request(app)
+      .get("/api/articles/not_a_number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
