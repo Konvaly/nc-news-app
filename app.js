@@ -6,10 +6,14 @@ const endpoints = require("./endpoints.json");
 const getEndpoints = require("./controllers/api.controllers");
 const getTopics = require("./controllers/topics.controllers");
 
+const handleNonExistantEndpoint = require("./controllers/errors.controllers")
+
 //console.log(endpoints, ">> endpoints in app")
 
 app.get('/api', getEndpoints);
 app.get('/api/topics', getTopics);
+
+app.all('/*', handleNonExistantEndpoint);
 
 module.exports = app;
 
