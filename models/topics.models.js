@@ -5,9 +5,6 @@ const fetchTopics = () => {
         .then(({ rows }) => {
             return rows
         })
-        .catch((err) => {
-            return Promise.reject(err)
-        })
 }
 
 module.exports = fetchTopics;
