@@ -1,7 +1,9 @@
 const endpoints = require("../endpoints.json");
 
-function getEndpoints(request, responce) {
-    responce.status(200).send({ endpoints })
+//console.log(endpoints, ">> endpoints in controller")
+
+const getEndpoints = (request, responce) => {
+    responce.status(200).send({ endpoints: endpoints })
 };
 
 module.exports = getEndpoints;

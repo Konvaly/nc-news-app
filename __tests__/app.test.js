@@ -5,6 +5,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const fetchTopics = require("../models/topics.models");
 
 /* Set up your beforeEach & afterAll functions here */
 //Reseed the database before each test
@@ -28,3 +29,37 @@ describe("GET /api", () => {
       });
   });
 });
+
+/*TASK-2*/
+
+//   /api/topics
+// 200: responds with an array of correctly formatted topic objects
+// - Check length af the array of objects
+// - Check that each attribute is of the data type I'm expecting
+
+describe("GET /api/topics", () => {
+  test("200: responds with an array of correctly formatted topic objects", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body: { topics } }) => {
+        expect(topics).toBeInstanceOf(Array)
+        expect(topics).toHaveLength(3)
+        topics.forEach((topic) => {
+          expect(topic).toEqual({
+            slug: expect.any(String),
+            description: expect.any(String),
+            img_url: expect.any(String)
+          })
+        })
+      })
+  })
+  test("404: responds with an error if path doesn't exist", () => {
+    return request(app)
+      .get('/api/nonexistent')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid path")
+      })
+  })
+})

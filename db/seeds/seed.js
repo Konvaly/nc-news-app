@@ -68,7 +68,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(queryStr);
     })
     .then(({ rows }) => {
-      console.log(rows, "<-- these are the rows")
+      //console.log(rows, "<-- these are the rows")
       const articleIdLookup = {}
       rows.forEach(articleRow => {
         articleIdLookup[articleRow.title] = articleRow.article_id
