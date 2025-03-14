@@ -119,7 +119,6 @@ describe("GET /api/articles", () => {
         expect(articles).toHaveLength(13);
 
         articles.forEach((article) => {
-          console.log(article, ">>> article from tests")
           expect(article).not.toHaveProperty("body");
 
           expect(article).toEqual({
@@ -153,6 +152,65 @@ describe("GET /api/articles", () => {
       })
   })
 })
+
+/*TASK-5*/
+///api/articles/:article_id/comments
+//Responds with: an array of comments for the given article_id of which 
+// each comment should have the following properties: comment_id, votes, 
+// created_at, author, body, article_id
+//Comments should be served with the most recent comments first.
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments for a valid article_id", () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(11);
+
+        comments.forEach((comment) => {
+          expect(comment).toEqual({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: 1
+          })
+        })
+      })
+  })
+  test("404: responds with 'Article not found' when article_id doesn't exist", () => {
+    return request(app)
+      .get('/api/articles/9999/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article not found" });
+      });
+  });
+  test("400: responds with 'Invalid article ID' when given an invalid article_id", () => {
+    return request(app)
+      .get('/api/articles/not-an-id/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Invalid article ID" });
+      });
+  });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
