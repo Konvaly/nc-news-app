@@ -5,6 +5,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const articles = require("../db/data/test-data/articles");
 
 /* Set up your beforeEach & afterAll functions here */
 //Reseed the database before each test
@@ -37,9 +38,9 @@ describe("GET /api", () => {
 // - Check that each attribute is of the data type I'm expecting
 
 describe("GET /api/topics", () => {
-  test("200: responds with an array of correctly formatted topic objects", () => {
+  test("200: responds with an array of correctly formatted topics objects", () => {
     return request(app)
-      .get("/api/topics")
+      .get('/api/topics')
       .expect(200)
       .then(({ body: { topics } }) => {
         expect(topics).toBeInstanceOf(Array)
@@ -71,7 +72,6 @@ describe("GET /api/articles/:article_id", () => {
       .get('/api/articles/1')
       .expect(200)
       .then(({ body: { article } }) => {
-        console.log(article, ">> article from test")
         expect(article).toEqual({
           author: expect.any(String),
           title: expect.any(String),
@@ -85,7 +85,6 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
   test("404: responds with an error if article_id does not exist", () => {
-    4
     return request(app)
       .get('/api/articles/9999')
       .expect(404)
@@ -102,4 +101,58 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+/*TASK-4*/
+//   /api/articles
+// Responds with 200 OK.
+// Returns an array of article objects.
+// Each article object should have the correct properties.
+// Articles should be sorted by created_at (descending).
+
+describe("GET /api/articles", () => {
+  test("200: responds with an array of correctly formatted article objects and articles should not include a body property", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(13);
+
+        articles.forEach((article) => {
+          console.log(article, ">>> article from tests")
+          expect(article).not.toHaveProperty("body");
+
+          expect(article).toEqual({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number)
+          })
+        })
+      })
+  })
+  test("200: articles should be sorted by created_at in descending order", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        const sortedArticles = [...articles].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        expect(articles).toEqual(sortedArticles)
+      })
+  })
+  test("404: responds with an error if path doesn't exist", () => {
+    return request(app)
+      .get('/api/nonexistent')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid path")
+      })
+  })
+})
+
+
 
