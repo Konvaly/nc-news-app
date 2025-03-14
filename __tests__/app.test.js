@@ -197,20 +197,12 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body).toEqual({ msg: "Invalid article ID" });
       });
   });
+  test("200: responds with an empty array when article exists but has no comments", () => {
+    return request(app)
+      .get('/api/articles/2/comments') // assuming article_id:2 exists but has no comments
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([]);
+      });
+  });
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
