@@ -66,5 +66,39 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Adds a new comment to a specific article.",
+    "requestBody": {
+      "username": "string (required) - The username of the user posting the comment.",
+      "body": "string (required) - The content of the comment."
+    },
+    "responses": {
+      "201": {
+        "description": "Successfully added comment",
+        "body": {
+          "comment": {
+            "comment_id": "number",
+            "body": "string",
+            "article_id": "number",
+            "author": "string",
+            "votes": 0,
+            "created_at": "ISO8601 timestamp"
+          }
+        }
+      },
+      "400": {
+        "description": "Bad request (missing required fields, invalid article_id format)",
+        "body": {
+          "msg": "Missing required fields"
+        }
+      },
+      "404": {
+        "description": "Not found (article or username does not exist)",
+        "body": {
+          "msg": "Article not found or User not found"
+        }
+      }
+    }
   }
 }

@@ -206,3 +206,151 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 })
+
+/*TASK-6*/
+//Should: be available on /api/articles/:article_id/comments.
+//add a comment for an article.
+//Request body accepts: an object with the following properties:
+//username, body
+//Responds with: the posted comment.
+describe("POST /api/articles/:article_id/comments", () => {
+  describe("201", () => {
+    test("201: Successfully adds a comment and responds with the posted comment", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a great article!"
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment).toEqual({
+            comment_id: expect.any(Number),
+            body: newComment.body,
+            article_id: 1,
+            author: newComment.username,
+            votes: 0, // New comments should have 0 votes
+            created_at: expect.any(String)
+          });
+        });
+    });
+    test("201: Ignores extra properties in request body and still adds the comment", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a great article!",
+        extraProperty: "This should be ignored",
+        anotherExtra: 123
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment).toEqual({
+            comment_id: expect.any(Number),
+            body: newComment.body,
+            article_id: 1,
+            author: newComment.username,
+            votes: 0,
+            created_at: expect.any(String)
+          });
+
+          expect(body.comment).not.toHaveProperty("extraProperty");
+          expect(body.comment).not.toHaveProperty("anotherExtra");
+        });
+    });
+  })
+  describe("400", () => {
+    test("400: Responds with an error when username is missing", () => {
+      const newComment = {
+        body: "This is a great article!"
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Missing required fields" })
+        })
+    })
+    test("400: Responds with an error when body is missing", () => {
+      const newComment = {
+        username: "butter_bridge"
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Missing required fields" })
+        })
+    })
+    test("400: Responds with an error when both fields are missing", () => {
+      const newComment = {};
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Missing required fields" })
+        })
+    })
+    test("400: responds with an error when article_id is not a number", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a great article!"
+      };
+
+      return request(app)
+        .post("/api/articles/not-a-number/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Invalid article ID" })
+        })
+    })
+  })
+  describe("404", () => {
+    test("404: Responds with an error when article_id doesn't exist", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a great article!"
+      };
+
+      return request(app)
+        .post("/api/articles/9999/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Article not found" })
+        })
+    })
+    test("404: Responds with an error when username does not exist", () => {
+      const newComment = {
+        username: "non_existent_user",
+        body: "What's the mess here!"
+      }
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "User not found" })
+        })
+    })
+  })
+});
+
+
+
+
+
+
+

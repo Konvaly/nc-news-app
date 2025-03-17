@@ -10,4 +10,16 @@ exports.fetchCommentsByArticleId = (article_id) => {
         .then(({ rows }) => {
             return rows;
         })
+};
+
+exports.addCommentToArticle = (article_id, username, body) => {
+    const queryStr = `
+    INSERT INTO comments (body, article_id, author, votes, created_at)
+    VALUES ($1, $2, $3, 0, NOW())
+    RETURNING *;
+    `
+    return db.query(queryStr, [body, article_id, username])
+        .then(({ rows }) => {
+            return rows[0];
+        })
 }
