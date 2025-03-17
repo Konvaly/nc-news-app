@@ -96,7 +96,7 @@
       "404": {
         "description": "Not found (article or username does not exist)",
         "body": {
-          "msg": "Article not found or User not found"
+          "msg": "Article not found or  User not found"
         }
       }
     }
