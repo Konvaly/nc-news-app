@@ -1,3 +1,4 @@
+const { status } = require("express/lib/response");
 const db = require("../db/connection");
 
 exports.fetchArticleById = (article_id) => {
@@ -25,5 +26,31 @@ exports.fetchArticles = () => {
                 ...article,
                 comment_count: Number(article.comment_count)
             }))
+        })
+}
+
+exports.updateArticleVotes = (article_id, inc_votes) => {
+    if (isNaN(article_id)) {
+        return Promise.reject({ status: 400, msg: "Invalid article ID" })
+    }
+    if (inc_votes === undefined) {
+        return Promise.reject({ status: 400, msg: "Missing required fields" });
+    }
+    if (typeof inc_votes !== "number") {
+        return Promise.reject({ status: 400, msg: "Invalid value for inc_votes" });
+    }
+
+    return db.query(`
+        UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *;`,
+        [inc_votes, article_id])
+        .then(({ rows }) => {
+            if (rows.length === 0) {
+                return Promise.reject({ status: 404, msg: "Article not found" })
+            }
+            console.log(rows[0])
+            return rows[0]
         })
 }

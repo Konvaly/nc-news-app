@@ -31,12 +31,6 @@ describe("GET /api", () => {
 });
 
 /*TASK-2*/
-
-//   /api/topics
-// 200: responds with an array of correctly formatted topic objects
-// - Check length af the array of objects
-// - Check that each attribute is of the data type I'm expecting
-
 describe("GET /api/topics", () => {
   test("200: responds with an array of correctly formatted topics objects", () => {
     return request(app)
@@ -103,12 +97,6 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 /*TASK-4*/
-//   /api/articles
-// Responds with 200 OK.
-// Returns an array of article objects.
-// Each article object should have the correct properties.
-// Articles should be sorted by created_at (descending).
-
 describe("GET /api/articles", () => {
   test("200: responds with an array of correctly formatted article objects and articles should not include a body property", () => {
     return request(app)
@@ -154,12 +142,6 @@ describe("GET /api/articles", () => {
 })
 
 /*TASK-5*/
-///api/articles/:article_id/comments
-//Responds with: an array of comments for the given article_id of which 
-// each comment should have the following properties: comment_id, votes, 
-// created_at, author, body, article_id
-//Comments should be served with the most recent comments first.
-
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments for a valid article_id", () => {
     return request(app)
@@ -208,11 +190,6 @@ describe("GET /api/articles/:article_id/comments", () => {
 })
 
 /*TASK-6*/
-//Should: be available on /api/articles/:article_id/comments.
-//add a comment for an article.
-//Request body accepts: an object with the following properties:
-//username, body
-//Responds with: the posted comment.
 describe("POST /api/articles/:article_id/comments", () => {
   describe("201", () => {
     test("201: Successfully adds a comment and responds with the posted comment", () => {
@@ -348,9 +325,76 @@ describe("POST /api/articles/:article_id/comments", () => {
   })
 });
 
+/*TASK-7*/
+describe("PATCH /api/articles/:article_id", () => {
+  describe("200", () => {
+    test("200: should update article votes and return the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 1,
+            votes: expect.any(Number),
+          });
+          expect(body.article.votes).toBe(101); // Assuming original votes = 100
+        });
+    });
+    test("200: should decrease article votes and return the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 1,
+            votes: expect.any(Number)
+          });
+          expect(body.article.votes).toBe(99); // Assuming original votes = 100
+        });
+    });
 
+  })
+  describe("400", () => {
+    test("400: should return an error when article_id is invalid", () => {
+      return request(app)
+        .patch('/api/articles/not-a-number')
+        .send({ inc_votes: 1 }) // valid body
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Invalid article ID" })
+        })
+    })
+    test("400: should return an error when inc_votes field is missing", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({}) // No inc_votes field
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Missing required fields" });
+        });
+    });
+    test("400: should return an error when inc_votes is not a number", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "not_a_number" }) // Invalid inc_votes value
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Invalid value for inc_votes" });
+        });
+    });
 
-
-
-
-
+  })
+  describe("404", () => {
+    test("404: returns an error when article_id doesn't exist", () => {
+      return request(app)
+        .patch('/api/articles/9999')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Article not found" })
+        })
+    })
+  })
+});

@@ -1,6 +1,6 @@
 const articles = require("../db/data/test-data/articles");
 const comments = require("../db/data/test-data/comments");
-const { fetchArticleById, fetchArticles } = require("../models/articles.models");
+const { fetchArticleById, fetchArticles, updateArticleVotes } = require("../models/articles.models");
 const { fetchCommentsByArticleId, addCommentToArticle } = require("../models/comments.models");
 
 exports.getArticleById = (req, res, next) => {
@@ -65,4 +65,15 @@ exports.postCommentByArticleId = (req, res, next) => {
                 return res.status(404).send({ msg: "User not found" })
             }
         })
+}
+
+exports.patchArticleVotes = (req, res, next) => {
+    const { article_id } = req.params;
+    const { inc_votes } = req.body;
+
+    updateArticleVotes(article_id, inc_votes)
+        .then((updatedArticle) => {
+            res.status(200).send({ article: updatedArticle })
+        })
+        .catch(next)
 }
