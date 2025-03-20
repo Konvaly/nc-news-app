@@ -355,4 +355,15 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     });
   })
+  describe("400", () => {
+    test("400: should return an error when article_id is invalid", () => {
+      return request(app)
+        .patch('/api/articles/not-a-number')
+        .send({ inc_votes: 1 }) // valid body
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Invalid article ID" })
+        })
+    })
+  })
 });

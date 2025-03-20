@@ -69,12 +69,11 @@ exports.postCommentByArticleId = (req, res, next) => {
 
 exports.patchArticleVotes = (req, res, next) => {
     const { article_id } = req.params;
-    console.log(article_id, "<< article_id form controllers")
     const { inc_votes } = req.body;
-    console.log(inc_votes, "<< inc_votes form controllers")
 
     updateArticleVotes(article_id, inc_votes)
         .then((updatedArticle) => {
             res.status(200).send({ article: updatedArticle })
         })
+        .catch(next)
 }

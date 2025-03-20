@@ -1,3 +1,4 @@
+const { status } = require("express/lib/response");
 const db = require("../db/connection");
 
 exports.fetchArticleById = (article_id) => {
@@ -29,6 +30,9 @@ exports.fetchArticles = () => {
 }
 
 exports.updateArticleVotes = (article_id, inc_votes) => {
+    if (isNaN(article_id)) {
+        return Promise.reject({ status: 400, msg: "Invalid article ID" })
+    }
     return db.query(`
         UPDATE articles
         SET votes = votes + $1
@@ -36,7 +40,6 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
         RETURNING *;`,
         [inc_votes, article_id])
         .then(({ rows }) => {
-            console.log(rows[0], ">> rows[0] from models")
             return rows[0]
         })
 }
