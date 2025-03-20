@@ -33,6 +33,10 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
     if (isNaN(article_id)) {
         return Promise.reject({ status: 400, msg: "Invalid article ID" })
     }
+    if (inc_votes === undefined) {
+        return Promise.reject({ status: 400, msg: "Missing required fields" });
+    }
+
     return db.query(`
         UPDATE articles
         SET votes = votes + $1

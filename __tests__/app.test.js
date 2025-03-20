@@ -365,6 +365,16 @@ describe("PATCH /api/articles/:article_id", () => {
           expect(body).toEqual({ msg: "Invalid article ID" })
         })
     })
+    test("400: should return an error when inc_votes field is missing", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({}) // No inc_votes field
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Missing required fields" });
+        });
+    });
+
   })
   describe("404", () => {
     test("404: returns an error when article_id doesn't exist", () => {
