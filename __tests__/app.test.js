@@ -374,6 +374,15 @@ describe("PATCH /api/articles/:article_id", () => {
           expect(body).toEqual({ msg: "Missing required fields" });
         });
     });
+    test("400: should return an error when inc_votes is not a number", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "not_a_number" }) // Invalid inc_votes value
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Invalid value for inc_votes" });
+        });
+    });
 
   })
   describe("404", () => {

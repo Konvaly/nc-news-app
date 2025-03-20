@@ -36,6 +36,9 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
     if (inc_votes === undefined) {
         return Promise.reject({ status: 400, msg: "Missing required fields" });
     }
+    if (typeof inc_votes !== "number") {
+        return Promise.reject({ status: 400, msg: "Invalid value for inc_votes" });
+    }
 
     return db.query(`
         UPDATE articles
