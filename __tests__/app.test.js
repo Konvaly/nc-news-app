@@ -354,6 +354,7 @@ describe("PATCH /api/articles/:article_id", () => {
           expect(body.article.votes).toBe(99); // Assuming original votes = 100
         });
     });
+
   })
   describe("400", () => {
     test("400: should return an error when article_id is invalid", () => {
