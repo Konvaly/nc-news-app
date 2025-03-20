@@ -40,6 +40,9 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
         RETURNING *;`,
         [inc_votes, article_id])
         .then(({ rows }) => {
+            if (rows.length === 0) {
+                return Promise.reject({ status: 404, msg: "Article not found" })
+            }
             return rows[0]
         })
 }

@@ -366,4 +366,15 @@ describe("PATCH /api/articles/:article_id", () => {
         })
     })
   })
+  describe("404", () => {
+    test("404: returns an error when article_id doesn't exist", () => {
+      return request(app)
+        .patch('/api/articles/9999')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Article not found" })
+        })
+    })
+  })
 });
