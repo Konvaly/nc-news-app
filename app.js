@@ -7,7 +7,7 @@ const endpoints = require("./endpoints.json");
 
 const { getEndpoints } = require("./controllers/api.controllers");
 const { getTopics } = require("./controllers/topics.controllers");
-const { getArticleById, getArticles, getCommentsByArticleId, postCommentByArticleId } = require("./controllers/articles.controllers");
+const { getArticleById, getArticles, getCommentsByArticleId, postCommentByArticleId, patchArticleVotes } = require("./controllers/articles.controllers");
 
 const {
     handleNonExistentEndpoint,
@@ -25,6 +25,8 @@ app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 app.post('/api/articles/:article_id/comments', postCommentByArticleId);
+
+app.patch('/api/articles/:article_id', patchArticleVotes)
 
 app.all('/*', handleNonExistentEndpoint);
 
