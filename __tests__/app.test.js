@@ -327,17 +327,32 @@ describe("POST /api/articles/:article_id/comments", () => {
 
 /*TASK-7*/
 describe("PATCH /api/articles/:article_id", () => {
-  test("200: should update article votes and return the updated article", () => {
-    return request(app)
-      .patch("/api/articles/1")
-      .send({ inc_votes: 1 })
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.article).toMatchObject({
-          article_id: 1,
-          votes: expect.any(Number),
+  describe("200", () => {
+    test("200: should update article votes and return the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 1,
+            votes: expect.any(Number),
+          });
+          expect(body.article.votes).toBe(101); // Assuming original votes = 100
         });
-        expect(body.article.votes).toBe(101); // Assuming original votes = 100
-      });
-  });
+    });
+    test("200: should decrease article votes and return the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 1,
+            votes: expect.any(Number)
+          });
+          expect(body.article.votes).toBe(99); // Assuming original votes = 100
+        });
+    });
+  })
 });
