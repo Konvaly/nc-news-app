@@ -398,3 +398,31 @@ describe("PATCH /api/articles/:article_id", () => {
     })
   })
 });
+
+/*TASK-8*/
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: responds with no content when a comment is successfully deleted", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  test("400: responds with 'Invalid comment ID' when comment_id is not a number", () => {
+    return request(app)
+      .delete("/api/comments/not-a-number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Invalid comment ID" });
+      });
+  });
+  test("404: responds with 'Comment not found' when comment_id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/9999") // assuming this ID doesn't exist in test DB
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Comment not found" });
+      });
+  });
+});
