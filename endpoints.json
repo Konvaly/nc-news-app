@@ -135,5 +135,25 @@
         }
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes the comment with the given comment_id.",
+    "responses": {
+      "204": {
+        "description": "Successfully deleted the comment. No content returned."
+      },
+      "400": {
+        "description": "Invalid comment ID format.",
+        "body": {
+          "msg": "Invalid comment ID"
+        }
+      },
+      "404": {
+        "description": "Comment not found.",
+        "body": {
+          "msg": "Comment not found"
+        }
+      }
+    }
   }
 }
