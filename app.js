@@ -4,6 +4,7 @@ const app = express();
 app.use(express.json()); //ensures JSON requests are parsed
 
 const endpoints = require("./endpoints.json");
+const cors = require('cors');
 
 const { getEndpoints } = require("./controllers/api.controllers");
 const { getTopics } = require("./controllers/topics.controllers");
@@ -17,6 +18,7 @@ const {
     handlePsqlErrors
 } = require("./controllers/errors.controllers");
 
+app.use(cors());
 
 app.get('/api', getEndpoints);
 
